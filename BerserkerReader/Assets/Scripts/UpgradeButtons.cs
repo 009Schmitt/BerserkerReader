@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class UpgradeButtons : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Quit()
     {
-        
+        Application.Quit();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void IlluminationButton()
     {
-        
+        FindObjectOfType<_GameManager>().UpgradeIllumination();
+    }
+    public void InteligenceButton()
+    {
+        FindObjectOfType<_GameManager>().UpgradeInteligence();
+    }
+    public void ReadQualityButton()
+    {
+        FindObjectOfType<_GameManager>().UpgradeReadQuality();
+    }
+    public void AutoReadButton()
+    {
+        FindObjectOfType<_GameManager>().UpgradeAutoRead();
     }
 }
