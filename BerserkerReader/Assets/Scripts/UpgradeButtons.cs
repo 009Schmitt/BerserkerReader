@@ -5,7 +5,7 @@ using UnityEngine;
 public class UpgradeButtons : MonoBehaviour
 {
     public void Quit()
-    {
+    { 
         Application.Quit();
     }
 
@@ -24,5 +24,10 @@ public class UpgradeButtons : MonoBehaviour
     public void AutoReadButton()
     {
         FindObjectOfType<_GameManager>().UpgradeAutoRead();
+    }
+
+    public void PlayerClick()
+    {
+        FindObjectOfType<_GameManager>().PlayerClick();
     }
 }

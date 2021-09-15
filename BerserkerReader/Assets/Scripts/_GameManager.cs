@@ -5,17 +5,22 @@ using UnityEngine;
 public class _GameManager : MonoBehaviour
 {
     public float illumination, inteligence, readQuality, autoRead;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void PlayerClick()
+    {
+        print("Deu Bom");
     }
 
     public void UpgradeIllumination()
