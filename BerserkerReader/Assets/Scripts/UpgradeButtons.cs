@@ -5,7 +5,7 @@ using UnityEngine;
 public class UpgradeButtons : MonoBehaviour
 {
     public void Quit()
-    { 
+    {
         Application.Quit();
     }
 
