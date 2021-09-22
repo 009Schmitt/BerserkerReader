@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class _GameManager : MonoBehaviour
 {
-
+    public Material mat1, mat2, mat3, mat4;
 
     public Transform pupilPosition;
     public float readQuantity;
+    public GameObject upgrade1, upgrade2, upgrade3, upgrade4;
 
     public SpriteRenderer bookColor;
     public float sapiens, score;
@@ -18,10 +19,13 @@ public class _GameManager : MonoBehaviour
     public float illumination, inteligence, readQuality, autoRead;
     public float illuminationCost, inteligenceCost, readQualityCost, autoReadCost;
 
+    private float actualTime, autoReadCooldown;
 
     // Start is called before the first frame update
     void Start()
     {
+        actualTime = 0;
+        autoReadCooldown = 2;
         readQuantity = 0;
         sapiens = 0;
         score = 0;
@@ -44,6 +48,8 @@ public class _GameManager : MonoBehaviour
             sapiens += (3 * ((((inteligence + 1) * 2)) + (illumination + 1)));
             //100 + (inteligence³)
             score += 100 + (Mathf.Pow(inteligence, 3));
+
+            // Change Book  Color
             contador++;
             if (contador > 2)
             {
@@ -51,8 +57,75 @@ public class _GameManager : MonoBehaviour
                 contador = 0;
             }
         }
+
+        //Auto Read Formula
+        if (autoRead > 0 && actualTime < Time.time)
+        {
+            readQuantity += 5;
+            if ((Time.time + (autoReadCooldown - (autoRead / 35))) < (Time.time + 0.1f))
+            {
+                actualTime = Time.time + 0.1f;
+            }
+            else
+            {
+                actualTime = Time.time + (autoReadCooldown - (autoRead / 35));
+            }
+        }
+
+        //Block size change
+        BlockSize();
+
+
+
         AtualizaText(sapiens, score);
 
+    }
+
+    private void BlockSize()
+    {
+        upgrade1.transform.localScale = new Vector3(((sapiens * 100) / autoReadCost) / 100, 0.2f, 1);
+        if (upgrade1.transform.localScale.x > 1)
+        {
+            upgrade1.transform.localScale = new Vector3(1, 0.2f, 1);
+            mat1.color = Color.green;
+        }
+        else
+        {
+            mat1.color = Color.red;
+        }
+
+        upgrade2.transform.localScale = new Vector3(((sapiens * 100) / illuminationCost) / 100, 0.2f, 1);
+        if (upgrade2.transform.localScale.x > 1)
+        {
+            upgrade2.transform.localScale = new Vector3(1, 0.2f, 1);
+            mat2.color = Color.green;
+        }
+        else
+        {
+            mat2.color = Color.red;
+        }
+
+        upgrade3.transform.localScale = new Vector3(((sapiens * 100) / inteligenceCost) / 100, 0.2f, 1);
+        if (upgrade3.transform.localScale.x > 1)
+        {
+            upgrade3.transform.localScale = new Vector3(1, 0.2f, 1);
+            mat3.color = Color.green;
+        }
+        else
+        {
+            mat3.color = Color.red;
+        }
+
+        upgrade4.transform.localScale = new Vector3(((sapiens * 100) / readQualityCost) / 100, 0.2f, 1);
+        if (upgrade4.transform.localScale.x > 1)
+        {
+            upgrade4.transform.localScale = new Vector3(1, 0.2f, 1);
+            mat4.color = Color.green;
+        }
+        else
+        {
+            mat4.color = Color.red;
+        }
     }
 
     //public Color ChoseColorBook()
@@ -97,7 +170,13 @@ public class _GameManager : MonoBehaviour
 
     public void PlayerClick()
     {
-        readQuantity += (10 + (readQuality * 2));
+        readQuantity += (8 + (readQuality));
+    }
+
+    private float CostCalculation(float lvl)
+    {
+        lvl++;
+        return (lvl * lvl) + 10;
     }
 
     public void UpgradeIllumination()
@@ -107,7 +186,7 @@ public class _GameManager : MonoBehaviour
         {
             illumination++;
             sapiens -= illuminationCost;
-            illuminationCost = (illumination * 4) + 10;
+            illuminationCost = CostCalculation(illumination);
         }
     }
     public void UpgradeInteligence()
@@ -116,7 +195,7 @@ public class _GameManager : MonoBehaviour
         {
             inteligence++;
             sapiens -= inteligenceCost;
-            inteligenceCost = (inteligence * 4) + 10;
+            inteligenceCost = CostCalculation(inteligence);
         }
 
     }
@@ -126,7 +205,7 @@ public class _GameManager : MonoBehaviour
         {
             readQuality++;
             sapiens -= readQualityCost;
-            readQualityCost = (readQuality * 4) + 10;
+            readQualityCost = CostCalculation(readQuality);
         }
     }
     public void UpgradeAutoRead()
@@ -135,7 +214,7 @@ public class _GameManager : MonoBehaviour
         {
             autoRead++;
             sapiens -= autoReadCost;
-            autoReadCost = (autoRead * 4) + 10;
+            autoReadCost = CostCalculation(autoRead);
         }
 
     }
