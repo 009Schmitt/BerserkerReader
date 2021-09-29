@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class _GameManager : MonoBehaviour
 {
+
     public Material mat1, mat2, mat3, mat4;
 
     public Transform pupilPosition;
@@ -24,11 +26,10 @@ public class _GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ReadFile();
         actualTime = 0;
         autoReadCooldown = 2;
         readQuantity = 0;
-        sapiens = 0;
-        score = 0;
         contador = 0;
         illuminationCost = 14;
         inteligenceCost = 14;
@@ -39,19 +40,19 @@ public class _GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pupilPosition.position = new Vector2(-(readQuantity / 100), pupilPosition.position.y);
+        pupilPosition.position = new Vector3(-(readQuantity / 100), pupilPosition.position.y, -70);
         if (pupilPosition.position.x < -1.2f)
         {
-            pupilPosition.position = new Vector2(0, pupilPosition.position.y);
+            pupilPosition.position = new Vector3(0, pupilPosition.position.y, -70);
             readQuantity = 0;
             //3 * (((Inteligence*2)/3) + (ilummination + 1))
             sapiens += (3 * ((((inteligence + 1) * 2)) + (illumination + 1)));
             //100 + (inteligence³)
             score += 100 + (Mathf.Pow(inteligence, 3));
 
-            // Change Book  Color
+            // Change Book Color
             contador++;
-            if (contador > 2)
+            if (contador > 3)
             {
                 bookColor.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
                 contador = 0;
@@ -72,13 +73,17 @@ public class _GameManager : MonoBehaviour
             }
         }
 
+        //ExitGame
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            WriteFile();
+            Application.Quit();
+        }
+
         //Block size change
+
         BlockSize();
-
-
-
         AtualizaText(sapiens, score);
-
     }
 
     private void BlockSize()
@@ -217,6 +222,61 @@ public class _GameManager : MonoBehaviour
             autoReadCost = CostCalculation(autoRead);
         }
 
+    }
+
+    private void ReadFile()
+    {
+        string path = Application.dataPath + "/Save/SaveFile.txt";
+        string text = "";
+
+        if (File.Exists(path))
+        {
+            text = File.ReadAllText(path);
+        }
+
+        string[] vetor = text.Split(':');
+        score = CI(vetor[1]);
+        sapiens = CI(vetor[3]);
+        autoRead = CI(vetor[5]);
+        illumination = CI(vetor[7]);
+        inteligence = CI(vetor[9]);
+        readQuality = CI(vetor[11]);
+    }
+    private void WriteFile()
+    {
+        string path = Application.dataPath + "/Save/SaveFile.txt";
+        string[] vetor = new string[]
+            {
+                $"Scor:{score}:",
+                $"Sapi:{sapiens}:",
+                $"Auto:{autoRead}:",
+                $"Illu:{illumination}:",
+                $"Inte:{inteligence}:",
+                $"Read:{readQuality}:"
+            };
+
+        if (File.Exists(path))
+        {
+            /*Scor:0:
+            Sapi:0:
+            Auto:0:
+            Illu:0:
+            Inte:0:
+            Read:0:
+            */
+            File.WriteAllLines(path, vetor);
+        }
+        else
+        {
+            File.Create(path);
+            File.WriteAllLines(path, vetor);
+        }
+
+    }
+
+    private int CI(string value)
+    {
+        return int.Parse(value);
     }
 
 

@@ -1,0 +1,6 @@
+Scor:0:
+Sapi:0:
+Auto:0:
+Illu:0:
+Inte:0:
+Read:0:
